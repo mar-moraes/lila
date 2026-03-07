@@ -8,6 +8,8 @@ export * from './chess';
 export type { StatusName, Status, StatusId } from './status';
 export { status, statusOf, started, finished, aborted, playing } from './status';
 
+export const hasAi = (data: GameData): boolean => !!(data.player.ai || data.opponent.ai);
+
 export const playable = (data: GameData): boolean => data.game.status.id < status.aborted && !imported(data);
 
 export const isPlayerPlaying = (data: GameData): boolean => playable(data) && !data.player.spectator;
@@ -27,7 +29,7 @@ export const abortable = (data: GameData): boolean =>
 export const rematchable = (data: GameData): boolean => !data.game.rules?.includes('noRematch');
 
 export const takebackable = (data: GameData): boolean =>
-  playable(data) &&
+  (playable(data) || (data.game.status.id === status.mate && hasAi(data))) &&
   data.takebackable &&
   bothPlayersHavePlayed(data) &&
   !data.player.proposingTakeback &&
@@ -62,8 +64,6 @@ export function getPlayer(data: GameData, color?: Color): Player | null {
   if (data.opponent.color === color) return data.opponent;
   return null;
 }
-
-export const hasAi = (data: GameData): boolean => !!(data.player.ai || data.opponent.ai);
 
 export const userAnalysable = (data: GameData): boolean =>
   finished(data) || (playable(data) && (!data.clock || !isPlayerPlaying(data)));

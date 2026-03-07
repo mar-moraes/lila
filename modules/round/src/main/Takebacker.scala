@@ -28,7 +28,7 @@ final private class Takebacker(
 
   private def canProposeTakeback(pov: Pov) =
     import pov.game.{ pov as _, * }
-    started && playable && !isTournament && !isSimul &&
+    started && (playable || (status == chess.Status.Mate && hasAi)) && !isTournament && !isSimul &&
     bothPlayersHaveMoved &&
     !player(pov.color).isProposingTakeback &&
     !opponent(pov.color).isProposingTakeback
@@ -121,7 +121,7 @@ final private class Takebacker(
             p.takeback == Pref.Takeback.ALWAYS || (p.takeback == Pref.Takeback.CASUAL && game.rated.no)
 
   private def IfAllowed[A](game: Game, prefs: Preload[ByColor[Pref]])(f: => Fu[A]): Fu[A] =
-    if !game.playable then fufail(ClientError("[takebacker] game is over " + game.id))
+    if !(game.playable || (game.status == chess.Status.Mate && game.hasAi)) then fufail(ClientError("[takebacker] game is over " + game.id))
     else if !game.canTakebackOrAddTime then fufail(ClientError("[takebacker] game disallows it " + game.id))
     else
       isAllowedByPrefs(game, prefs).flatMap:

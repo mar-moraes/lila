@@ -17,7 +17,8 @@ object Rewind:
             clkPlayer.setRemaining(game.clockHistory.flatMap(_(color).lastOption) | clkPlayer.limit)
         }
         val newGame = game.copy(
-          players = game.players.map(_.removeTakebackProposition),
+          status = chess.Status.Started,
+          players = game.players.map(_.removeTakebackProposition).map(_.copy(isWinner = None)),
           chess = rewindedGame.copy(clock = newClock),
           binaryMoveTimes = game.binaryMoveTimes.map { binary =>
             val moveTimes = BinaryFormat.moveTime.read(binary, game.playedPlies)
