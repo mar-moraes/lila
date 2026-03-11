@@ -9,6 +9,7 @@ $hover-bg: $m-primary_bg--mix-30;
 
   gap: 3vh;
   background: $c-bg-box;
+  overflow: visible;
 
   &__side {
     @extend %flex-column;
@@ -215,7 +216,7 @@ $hover-bg: $m-primary_bg--mix-30;
   }
 
   &__header {
-    @extend %flex-center-nowrap;
+    @extend %flex-center-nowrap, %box-radius-top;
 
     background: $c-bg-zebra;
 
@@ -539,10 +540,14 @@ $hover-bg: $m-primary_bg--mix-30;
   }
 
   &__players {
+    @extend %box-radius-bottom;
+
     overflow: auto;
   }
 
   &__players__table {
+    border-bottom: 0;
+
     thead {
       background: none;
 
@@ -754,8 +759,9 @@ $hover-bg: $m-primary_bg--mix-30;
   %game-link-styles {
     @extend %flex-center-nowrap, %box-radius;
 
+    padding: 0.4em 0.5em;
+
     @media (min-width: at-least($medium)) {
-      padding: 0.4em 0.5em;
       font-size: 1.6em;
     }
 
@@ -791,6 +797,8 @@ $hover-bg: $m-primary_bg--mix-30;
 
     .player-intro__name {
       @include ellipsis;
+
+      max-width: 40vw;
     }
   }
 }
@@ -879,6 +887,20 @@ $hover-bg: $m-primary_bg--mix-30;
     tick {
       top: 1.5px;
       border-bottom-width: 3px;
+    }
+  }
+}
+
+.relay-tour__player {
+  &__games {
+    .game-point {
+      font-weight: bold;
+    }
+
+    @media (max-width: at-most($xxx-small)) {
+      td.rating-diff {
+        display: none;
+      }
     }
   }
 }
